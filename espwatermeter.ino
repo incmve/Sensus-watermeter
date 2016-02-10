@@ -98,7 +98,7 @@ if ((millis() - prevMillis) >= 300000) {
     client.print("PATCH /api/variables/test2");
     client.print(" HTTP/1.1\r\n");
     client.print("Authorization: Basic ");
-    client.print("YWRtaW46YWRtaW4="); //https://www.base64decode.org/
+    client.print("YWRtaW46YWRtaW4="); // admin:admin use https://www.base64decode.org/ to encode/decode
     client.print("\r\n");
     client.print("PimaticHost: mvegte.myqnapcloud.com\r\n");
     client.print("Content-Type:application/json\r\n");
