@@ -5,12 +5,12 @@ Check maredana.nl for my domotica projects.
 
 // WiFi parameters
 const char* ssid = "SSID";
-const char* password = "PASSWORD";
+const char* password = "PASS";
 
 // pimatic parameters
 const char* PimaticUser = "admin";
 const char* PimaticPassword = "admin";
-const char* PimaticHost = "192.168.0.20";
+const char* PimaticHost = "192.168.x.x";
 const int PimaticPort = 8080;
 
 // Sensor data
@@ -49,7 +49,7 @@ void setup()  {
 
 void loop() {
 
-  sensorWater = analogRead(1); // Analog pin with sensor attached
+  sensorWater = analogRead(A0); // Analog pin with sensor attached
 
   if (sensorWater > drempelWater) {pulseWater = true;}
 
@@ -70,6 +70,7 @@ if ((millis() - prevMillis) >= 300000) {
   if (!client.connect(PimaticHost, PimaticPort)) {
     Serial.println("connection failed");
     return;
+  }
   prevMillis = millis();
   Serial.print(curL);
   Serial.println(" L/m");
@@ -84,7 +85,7 @@ if ((millis() - prevMillis) >= 300000) {
     client.print("Authorization: Basic ");
     client.print("YWRtaW46YWRtaW4="); //https://www.base64decode.org/
     client.print("\r\n");
-    client.print("PimaticHost: mvegte.myqnapcloud.com\r\n");
+    client.print("PimaticHost: 192.168.0.20\r\n");
     client.print("Content-Type:application/json\r\n");
     client.print("Content-Length: ");
     client.print(liter.length());
@@ -118,7 +119,6 @@ if ((millis() - prevMillis) >= 300000) {
   Serial.println();
   Serial.println("closing connection");
   pulseCountW = 0;
-}
 }
   // Serial debugging to determine trigger values
   /*
