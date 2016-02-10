@@ -2,14 +2,18 @@
 Check maredana.nl for my domotica projects.
 */
 #include "ESP8266WiFi.h"
+#include <Base64.h>
 
+#define BASE64_LEN 40
 // WiFi parameters
 const char* ssid = "SSID";
 const char* password = "PASS";
 
 // pimatic parameters
-const char* PimaticUser = "admin";
-const char* PimaticPassword = "admin";
+
+char unameenc[BASE64_LEN];
+String PimaticUserStored = "admin";
+String PimaticPassStored = "admin";
 const char* PimaticHost = "192.168.x.x";
 const int PimaticPort = 8080;
 
@@ -77,13 +81,18 @@ if ((millis() - prevMillis) >= 300000) {
   Serial.print(totalL);
   Serial.println(" liter");
   Serial.println();
-  
+
+  char uname[BASE64_LEN];
+  String str = String(PimaticUserStored) + ":" + String(PimaticPassStored);
+  str.toCharArray(uname, BASE64_LEN);
+  memset(unameenc, 0, sizeof(unameenc));
+  base64_encode(unameenc, uname, strlen(uname));
   String liter;
   liter = "{\"type\": \"value\", \"valueOrExpression\": \"" + String(curL) + "\"}";
     client.print("PATCH /api/variables/test1");
     client.print(" HTTP/1.1\r\n");
     client.print("Authorization: Basic ");
-    client.print("YWRtaW46YWRtaW4="); //https://www.base64decode.org/
+    client.print(unameenc);
     client.print("\r\n");
     client.print("PimaticHost: 192.168.0.20\r\n");
     client.print("Content-Type:application/json\r\n");
@@ -98,9 +107,9 @@ if ((millis() - prevMillis) >= 300000) {
     client.print("PATCH /api/variables/test2");
     client.print(" HTTP/1.1\r\n");
     client.print("Authorization: Basic ");
-    client.print("YWRtaW46YWRtaW4="); // admin:admin use https://www.base64decode.org/ to encode/decode
+    client.print(unameenc);
     client.print("\r\n");
-    client.print("PimaticHost: mvegte.myqnapcloud.com\r\n");
+    client.print("PimaticHost: 192.168.0.20\r\n");
     client.print("Content-Type:application/json\r\n");
     client.print("Content-Length: ");
     client.print(totalliter.length());
@@ -127,6 +136,5 @@ if ((millis() - prevMillis) >= 300000) {
   delay(100);
   */
 }
-
 
 
